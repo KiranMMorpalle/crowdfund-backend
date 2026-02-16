@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface CampaignService {
 
-    Campaign createCampaign(String title, String description, BigDecimal targetAmount);
-
-    List<Campaign> getAllCampaigns();
+//    Campaign createCampaign(String title, String description, BigDecimal targetAmount);
+//
+//    List<Campaign> getAllCampaigns();
 }
