@@ -56,7 +56,7 @@ Ready for service layer implementation.
 ---
 ## 📌 Day 2 – Service Layer Implementation
 
-✅ Implemented
+### ✅ Implemented
 
 - Service Layer (CampaignService + Impl)
 - Business validation rules
