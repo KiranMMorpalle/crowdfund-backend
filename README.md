@@ -54,6 +54,35 @@ Foundation complete.
 Ready for service layer implementation.
 
 ---
+## 📌 Day 2 – Service Layer Implementation
+
+✅ Implemented
+
+- Service Layer (CampaignService + Impl)
+- Business validation rules
+- Role-Based Access Control (manual enforcement)
+- Custom exception hierarchy
+- Transaction boundaries (@Transactional)
+- Optimistic locking using @Version
+- UUID-based identity
+- Foreign key mapping (Campaign → User)
+
+---
+### 🧠 Architectural Improvements
+
+- Clean separation of concerns
+- Controlled state transitions (PENDING → APPROVED / REJECTED)
+- Indexed columns for query optimization
+- Domain-driven validation at service layer
+
+---
+
+### 🔐 Data Integrity
+
+- NOT NULL constraints
+- Foreign key constraints
+- Unique email constraint
+- Version column for concurrency safety
 
 ## 🔜 Roadmap
 
