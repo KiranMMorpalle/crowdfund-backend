@@ -1,12 +1,14 @@
 package com.crowdfund.backend.campaign.dto;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 public class CampaignRequest {
 
     private String title;
     private String description;
     private BigDecimal targetAmount;
+    private UUID creatorId;
 
     public CampaignRequest() {}
 
@@ -32,5 +34,13 @@ public class CampaignRequest {
 
     public void setTargetAmount(BigDecimal targetAmount) {
         this.targetAmount = targetAmount;
+    }
+
+    public UUID getCreatorId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(UUID creatorId) {
+        this.creatorId = creatorId;
     }
 }

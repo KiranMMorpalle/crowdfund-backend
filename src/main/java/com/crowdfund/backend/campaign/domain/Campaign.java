@@ -59,6 +59,87 @@ public class Campaign {
     }
 
     // getters and setters
+
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public BigDecimal getTargetAmount() {
+        return targetAmount;
+    }
+
+    public void setTargetAmount(BigDecimal targetAmount) {
+        this.targetAmount = targetAmount;
+    }
+
+    public BigDecimal getRaisedAmount() {
+        return raisedAmount;
+    }
+
+    public void setRaisedAmount(BigDecimal raisedAmount) {
+        this.raisedAmount = raisedAmount;
+    }
+
+    public CampaignStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(CampaignStatus status) {
+        this.status = status;
+    }
+
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
 }
 
 

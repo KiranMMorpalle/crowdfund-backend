@@ -14,7 +14,8 @@ public class CampaignController {
 
     private final CampaignService campaignService;
 
-    public CampaignController(CampaignService campaignService) {
+    public CampaignController(CampaignService campaignService)
+    {
         this.campaignService = campaignService;
     }
 
@@ -23,7 +24,8 @@ public class CampaignController {
         return campaignService.createCampaign(
                 request.getTitle(),
                 request.getDescription(),
-                request.getTargetAmount()
+                request.getTargetAmount(),
+                request.getCreatorId()
         );
     }
 
@@ -32,4 +34,6 @@ public class CampaignController {
     public List<Campaign> getAllCampaigns() {
         return campaignService.getAllCampaigns();
     }
+
+    // approved campaign
 }
