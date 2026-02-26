@@ -8,11 +8,14 @@ designed with enterprise-grade architecture principles.
 ## 🚀 Tech Stack
 
 - Java 17+
-- Spring Boot
-- Spring Data JPA
+- Spring Boot 4
+- Spring Data JPA (Hibernate)
 - PostgreSQL
 - Maven
 - Docker (Planned)
+- UUID-based identity
+- Optimistic locking
+- Role-Based Access Control
 
 ---
 
@@ -23,6 +26,7 @@ designed with enterprise-grade architecture principles.
 - UUID-based primary keys
 - Optimistic locking for concurrency
 - Role-Based Access Control (RBAC)
+- Indexed query optimization
 
 ---
 
@@ -48,6 +52,18 @@ com.crowdfund.backend
 
 ---
 
+## 📊 Version Milestones
+
+| Day   | Version | Description                         |
+| ----- | ------- | ----------------------------------- |
+| Day 1 | v1.0.0  | Domain + Repository Foundation      |
+| Day 2 | v1.1.0  | Service Layer + Business Validation |
+| Day 3 | v1.2.0  | REST Controllers                    |
+| Day 4 | v1.3.0  | Donation + Concurrency              |
+| Day 5 | v2.0.0  | JWT Security                        |
+| Day 7 | v3.0.0  | Deployment                          |
+
+---
 ## 📌 Current Status
 
 Foundation complete.  
@@ -77,11 +93,12 @@ Ready for service layer implementation.
 
 ---
 
-### 🔐 Data Integrity
+### 🔐 Security & Data Integrity
 
 - NOT NULL constraints
 - Foreign key constraints
 - Unique email constraint
+- Optimistic locking for concurrency
 - Version column for concurrency safety
 
 ## 🔜 Roadmap
