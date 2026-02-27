@@ -42,3 +42,31 @@ All notable changes to this project will be documented here.
 - Controlled state transitions (PENDING → APPROVED / REJECTED) 
 
 ---
+
+## [v1.2.0] — Day 3 (REST API Stabilization)
+
+### Added
+
+- CampaignController (Public APIs)
+- AdminCampaignController (Admin APIs)
+- ApiResponse<T> standardized response wrapper
+- GlobalExceptionHandler for centralized exception handling
+- ErrorResponse structured error model
+- DTO boundary (CampaignResponseDTO, UserSummaryDTO)
+- API versioning (`/api/v1`)
+
+### Improved
+
+- Removed entity exposure from controllers
+- Proper HTTP status alignment (201, 400, 403, 404)
+- Public campaign filtering (APPROVED only)
+- Clean separation of public and admin endpoints
+- Structured JSON error responses
+- Repository method `findByIdAndStatus` for secure public access
+
+### Verified
+
+- Full Postman API testing completed
+- RBAC enforcement validated
+- Business validation scenarios tested
+- Duplicate approval protection verified
