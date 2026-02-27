@@ -6,12 +6,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.UUID;
-
+import java.util.Optional;
 
 
 public interface CampaignRepository extends JpaRepository<Campaign, UUID> {
 
     List<Campaign> findByStatus(CampaignStatus status);
+    Optional<Campaign> findByIdAndStatus(UUID id, CampaignStatus status);
 }
 
 

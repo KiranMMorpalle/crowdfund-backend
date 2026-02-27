@@ -100,7 +100,72 @@ Ready for service layer implementation.
 - Unique email constraint
 - Optimistic locking for concurrency
 - Version column for concurrency safety
+---
 
+## 📌 Day 3 – REST API Stabilization
+
+### 🎯 Objective
+Convert service layer into production-grade REST APIs with:
+- DTO boundary
+- Global exception handling
+- Proper HTTP status codes
+- Public/Admin API separation
+- Versioned endpoints (`/api/v1`)
+
+---
+
+## 🔹 Public APIs
+
+| Method | Endpoint |
+|--------|----------|
+| POST   | `/api/v1/campaigns` |
+| GET    | `/api/v1/campaigns` |
+| GET    | `/api/v1/campaigns/{id}` |
+
+---
+
+## 🔹 Admin APIs
+
+| Method | Endpoint |
+|--------|----------|
+| PUT | `/api/v1/admin/campaigns/{id}/approve` |
+| PUT | `/api/v1/admin/campaigns/{id}/reject` |
+
+(Admin actions require `adminId` query parameter – temporary until JWT integration.)
+
+---
+
+## 🏗 Key Improvements Implemented
+
+- DTO Boundary Pattern (No entity exposure)
+- ApiResponse wrapper for consistent JSON responses
+- GlobalExceptionHandler with structured error responses
+- Proper HTTP status alignment (201, 400, 403, 404)
+- Role-based access control (manual RBAC)
+- Status-based public filtering (only APPROVED visible)
+- API versioning (`/api/v1`)
+
+---
+
+## 🧪 Test Coverage (Manually Verified via Postman)
+
+- Campaign creation → `201 CREATED`
+- Admin approval → `200 OK`
+- Duplicate approval → `400 BAD_REQUEST`
+- Unauthorized admin action → `403 FORBIDDEN`
+- Invalid data → `400 BAD_REQUEST`
+- Not found → `404 NOT_FOUND`
+- Public visibility filtering verified
+
+---
+
+## 🏁 Status
+
+Day 3 is fully implemented, tested, and production-ready.
+
+
+
+---
 ## 🔜 Roadmap
 
 - Day 2 – Service Layer
