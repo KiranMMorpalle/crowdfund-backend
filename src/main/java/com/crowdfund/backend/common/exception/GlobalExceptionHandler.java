@@ -1,9 +1,12 @@
 package com.crowdfund.backend.common.exception;
 
+
 //import com.crowdfund.backend.common.exception.ErrorResponse;
+import jakarta.persistence.OptimisticLockException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -66,6 +69,23 @@ public class GlobalExceptionHandler {
         );
 
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+
+    // 5
+    @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
+    public ResponseEntity<ErrorResponse> handleOptimisticLockingFailure(
+            ObjectOptimisticLockingFailureException ex,
+            HttpServletRequest request) {
+
+        ErrorResponse error = new ErrorResponse(
+                409,
+                "CONFLICT",
+                "Concurrent update detected. Please retry.",
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(409).body(error);
     }
 
 

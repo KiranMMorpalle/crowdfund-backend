@@ -12,6 +12,16 @@ public class ApiResponse<T> {
         this.data = data;
     }
 
+    // ✅ Static success factory method
+    public static <T> ApiResponse<T> success(T data) {
+        return new ApiResponse<>(true, "Request successful", data);
+    }
+
+    // ✅ Static failure factory method (optional but recommended)
+    public static <T> ApiResponse<T> failure(String message) {
+        return new ApiResponse<>(false, message, null);
+    }
+
     public boolean isSuccess() {
         return success;
     }

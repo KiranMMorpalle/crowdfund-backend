@@ -70,3 +70,18 @@ All notable changes to this project will be documented here.
 - RBAC enforcement validated
 - Business validation scenarios tested
 - Duplicate approval protection verified
+
+
+## [v1.2.0] - Day 4 (Donation Module & Concurrency)
+
+### Added
+- Donation entity and repository
+- Donation service and controller
+- Transactional donation processing
+- Optimistic locking for raisedAmount
+- Conflict handling (HTTP 409)
+- Donation listing endpoint
+
+### Improved
+- Financial integrity protection
+- Concurrency-safe updates

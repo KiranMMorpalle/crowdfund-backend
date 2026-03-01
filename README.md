@@ -159,10 +159,35 @@ Convert service layer into production-grade REST APIs with:
 
 ---
 
-## 🏁 Status
+## Day 4 – Donation Module & Concurrency Control
 
-Day 3 is fully implemented, tested, and production-ready.
+## Overview
+Implemented donation functionality with safe concurrent updates using optimistic locking.
 
+## Features Added
+- Donation entity with Campaign relationship
+- Raised amount transactional update
+- Optimistic locking using @Version
+- Conflict handling (HTTP 409)
+- Donation listing API
+- Input validation for donation amount
+
+## New APIs
+
+### Donate to Campaign
+POST http://localhost:8080/api/v1/campaigns/{id}/donate
+
+### Get Campaign Donations
+GET http://localhost:8080/api/v1/campaigns/{id}/donations
+
+## Concurrency Handling
+- Uses JPA @Version field
+- Prevents lost update problem
+- Returns 409 on version conflict
+- Ensures financial consistency
+
+## Status
+Day 4 complete.
 
 
 ---
