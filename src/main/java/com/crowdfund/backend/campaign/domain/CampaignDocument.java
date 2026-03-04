@@ -1,55 +1,65 @@
 package com.crowdfund.backend.campaign.domain;
 
-
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
-@Table(
-        name = "campaign_documents",
-        indexes = {
-                @Index(name = "idx_doc_campaign", columnList = "campaign_id")
-        }
-)
+@Table(name = "campaign_documents")
 public class CampaignDocument {
 
     @Id
-    @GeneratedValue
-    private UUID id;
-
-    private String filterUrl;
-
-    //  AI confidence score from verification service.
-    private Double aiConfidenceScore;
-
-    private  Boolean verificationStatus = false;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "campaign_id", nullable = false)
-    private  Campaign campaign;
+    private Campaign campaign;
 
+    @Column(nullable = false)
+    private String fileName;
+
+    @Column(nullable = false)
+    private String filePath;
 
     private LocalDateTime uploadedAt;
 
     @PrePersist
-    protected void onUpload(){
+    protected void onUpload() {
         this.uploadedAt = LocalDateTime.now();
     }
 
+    public CampaignDocument() {}
 
-    // Getters & Setters
+    public Long getId() {
+        return id;
+    }
+
+    public Campaign getCampaign() {
+        return campaign;
+    }
+
+    public void setCampaign(Campaign campaign) {
+        this.campaign = campaign;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public LocalDateTime getUploadedAt() {
+        return uploadedAt;
+    }
 }
-
-
-
-
-/*
--------------------------------------------------------
-SUMMARY:
-Stores supporting documents for campaign.
-Linked via foreign key.
-Supports future AI verification system.
--------------------------------------------------------
-*/

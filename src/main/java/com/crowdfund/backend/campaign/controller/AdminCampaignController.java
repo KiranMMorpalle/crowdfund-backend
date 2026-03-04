@@ -4,6 +4,8 @@ import com.crowdfund.backend.campaign.dto.ApiResponse;
 import com.crowdfund.backend.campaign.dto.CampaignResponseDTO;
 import com.crowdfund.backend.campaign.service.CampaignService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -18,27 +20,32 @@ public class AdminCampaignController {
         this.campaignService = campaignService;
     }
 
-    // Temporary: passing adminId manually until JWT integration
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}/approve")
     public ResponseEntity<ApiResponse<CampaignResponseDTO>> approve(
             @PathVariable UUID id,
-            @RequestParam UUID adminId) {
+            Authentication authentication) {
+
+        String adminEmail = authentication.getName();
 
         CampaignResponseDTO updated =
-                campaignService.approveCampaign(id, adminId);
+                campaignService.approveCampaign(id, adminEmail);
 
         return ResponseEntity.ok(
                 new ApiResponse<>(true, "Campaign approved successfully", updated)
         );
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}/reject")
     public ResponseEntity<ApiResponse<CampaignResponseDTO>> reject(
             @PathVariable UUID id,
-            @RequestParam UUID adminId) {
+            Authentication authentication) {
+
+        String adminEmail = authentication.getName();
 
         CampaignResponseDTO updated =
-                campaignService.rejectCampaign(id, adminId);
+                campaignService.rejectCampaign(id, adminEmail);
 
         return ResponseEntity.ok(
                 new ApiResponse<>(true, "Campaign rejected successfully", updated)

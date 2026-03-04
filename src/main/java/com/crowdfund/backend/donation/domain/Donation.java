@@ -1,6 +1,7 @@
 package com.crowdfund.backend.donation.domain;
 
 import com.crowdfund.backend.campaign.domain.Campaign;
+import com.crowdfund.backend.user.domain.User;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -15,28 +16,29 @@ public class Donation {
     @GeneratedValue
     private UUID id;
 
-    @ManyToOne(optional = false)
+    @Column(nullable = false)
+    private BigDecimal amount;
+
+    @Column(name = "donated_at", nullable = false)
+    private LocalDateTime donatedAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private DonationStatus status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "campaign_id", nullable = false)
     private Campaign campaign;
 
-    @Column(nullable = false, precision = 15, scale = 2)
-    private BigDecimal amount;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    @Column(nullable = false)
-    private LocalDateTime donatedAt;
-
-    // ===== Getters & Setters =====
+    public Donation() {
+    }
 
     public UUID getId() {
         return id;
-    }
-
-    public Campaign getCampaign() {
-        return campaign;
-    }
-
-    public void setCampaign(Campaign campaign) {
-        this.campaign = campaign;
     }
 
     public BigDecimal getAmount() {
@@ -51,7 +53,31 @@ public class Donation {
         return donatedAt;
     }
 
-    public void setDonatedAt(LocalDateTime donatedAt) {
+    public void setDonatedAt(LocalDateTime donatedAt) {   // 🔥 This was missing
         this.donatedAt = donatedAt;
+    }
+
+    public DonationStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(DonationStatus status) {
+        this.status = status;
+    }
+
+    public Campaign getCampaign() {
+        return campaign;
+    }
+
+    public void setCampaign(Campaign campaign) {
+        this.campaign = campaign;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

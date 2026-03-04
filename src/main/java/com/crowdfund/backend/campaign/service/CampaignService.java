@@ -8,11 +8,11 @@ import java.util.UUID;
 
 public interface CampaignService {
 
-    CampaignResponseDTO createCampaign(CampaignRequest request);
+    CampaignResponseDTO createCampaign(CampaignRequest request, String userEmail);
 
-    CampaignResponseDTO approveCampaign(UUID campaignId, UUID adminId);
+    CampaignResponseDTO approveCampaign(UUID campaignId, String adminEmail);
 
-    CampaignResponseDTO rejectCampaign(UUID campaignId, UUID adminId);
+    CampaignResponseDTO rejectCampaign(UUID campaignId, String adminEmail);
 
     List<CampaignResponseDTO> getApprovedCampaigns();
 

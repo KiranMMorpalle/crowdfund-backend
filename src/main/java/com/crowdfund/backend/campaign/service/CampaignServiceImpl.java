@@ -31,16 +31,23 @@ public class CampaignServiceImpl implements CampaignService {
         this.userRepository = userRepository;
     }
 
-    // 1️⃣ CREATE CAMPAIGN
     @Override
     @Transactional
-    public CampaignResponseDTO createCampaign(CampaignRequest request) {
+    public CampaignResponseDTO createCampaign(CampaignRequest request, String userEmail) {
 
-        User creator = userRepository.findById(request.getCreatorId())
+        User creator = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        if (request.getTargetAmount().compareTo(BigDecimal.ZERO) <= 0) {
+        if (request.getTargetAmount() == null ||
+                request.getTargetAmount().compareTo(BigDecimal.ZERO) <= 0) {
             throw new BusinessValidationException("Target amount must be greater than zero.");
+        }
+
+        if (request.getCategory() == null ||
+                request.getBeneficiaryName() == null ||
+                request.getOrganizerName() == null ||
+                request.getLocation() == null) {
+            throw new BusinessValidationException("All mandatory fields must be provided.");
         }
 
         Campaign campaign = new Campaign();
@@ -48,6 +55,12 @@ public class CampaignServiceImpl implements CampaignService {
         campaign.setDescription(request.getDescription());
         campaign.setTargetAmount(request.getTargetAmount());
         campaign.setRaisedAmount(BigDecimal.ZERO);
+
+        campaign.setCategory(request.getCategory());
+        campaign.setBeneficiaryName(request.getBeneficiaryName());
+        campaign.setOrganizerName(request.getOrganizerName());
+        campaign.setLocation(request.getLocation());
+
         campaign.setCreatedBy(creator);
         campaign.setStatus(CampaignStatus.PENDING);
 
@@ -56,20 +69,19 @@ public class CampaignServiceImpl implements CampaignService {
         return mapToDTO(saved);
     }
 
-    // 2️⃣ APPROVE CAMPAIGN
     @Override
     @Transactional
-    public CampaignResponseDTO approveCampaign(UUID campaignId, UUID adminId) {
+    public CampaignResponseDTO approveCampaign(UUID campaignId, String adminEmail) {
 
-        User admin = userRepository.findById(adminId)
-                .orElseThrow(() -> new ResourceNotFoundException("Admin not found."));
+        User admin = userRepository.findByEmail(adminEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Admin not found"));
 
         if (!admin.getRole().equals(Role.ADMIN)) {
             throw new UnauthorizedOperationException("Only ADMIN can approve campaign.");
         }
 
         Campaign campaign = campaignRepository.findById(campaignId)
-                .orElseThrow(() -> new ResourceNotFoundException("Campaign not found."));
+                .orElseThrow(() -> new ResourceNotFoundException("Campaign not found"));
 
         if (!campaign.getStatus().equals(CampaignStatus.PENDING)) {
             throw new BusinessValidationException("Only PENDING campaign can be approved.");
@@ -77,25 +89,22 @@ public class CampaignServiceImpl implements CampaignService {
 
         campaign.setStatus(CampaignStatus.APPROVED);
 
-        Campaign updated = campaignRepository.save(campaign);
-
-        return mapToDTO(updated);
+        return mapToDTO(campaignRepository.save(campaign));
     }
 
-    // 3️⃣ REJECT CAMPAIGN
     @Override
     @Transactional
-    public CampaignResponseDTO rejectCampaign(UUID campaignId, UUID adminId) {
+    public CampaignResponseDTO rejectCampaign(UUID campaignId, String adminEmail) {
 
-        User admin = userRepository.findById(adminId)
-                .orElseThrow(() -> new ResourceNotFoundException("Admin not found."));
+        User admin = userRepository.findByEmail(adminEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Admin not found"));
 
         if (!admin.getRole().equals(Role.ADMIN)) {
             throw new UnauthorizedOperationException("Only ADMIN can reject campaign.");
         }
 
         Campaign campaign = campaignRepository.findById(campaignId)
-                .orElseThrow(() -> new ResourceNotFoundException("Campaign not found."));
+                .orElseThrow(() -> new ResourceNotFoundException("Campaign not found"));
 
         if (!campaign.getStatus().equals(CampaignStatus.PENDING)) {
             throw new BusinessValidationException("Only PENDING campaign can be rejected.");
@@ -103,27 +112,19 @@ public class CampaignServiceImpl implements CampaignService {
 
         campaign.setStatus(CampaignStatus.REJECTED);
 
-        Campaign updated = campaignRepository.save(campaign);
-
-        return mapToDTO(updated);
+        return mapToDTO(campaignRepository.save(campaign));
     }
 
-    // 4️⃣ GET ALL APPROVED CAMPAIGNS
     @Override
     public List<CampaignResponseDTO> getApprovedCampaigns() {
-
-        List<Campaign> campaigns =
-                campaignRepository.findByStatus(CampaignStatus.APPROVED);
-
-        return campaigns.stream()
+        return campaignRepository.findByStatus(CampaignStatus.APPROVED)
+                .stream()
                 .map(this::mapToDTO)
                 .toList();
     }
 
-    // 5️⃣ GET APPROVED CAMPAIGN BY ID
     @Override
     public CampaignResponseDTO getApprovedCampaignById(UUID campaignId) {
-
         Campaign campaign = campaignRepository
                 .findByIdAndStatus(campaignId, CampaignStatus.APPROVED)
                 .orElseThrow(() -> new ResourceNotFoundException("Campaign not found"));
@@ -131,7 +132,6 @@ public class CampaignServiceImpl implements CampaignService {
         return mapToDTO(campaign);
     }
 
-    // 🔁 ENTITY → DTO MAPPER
     private CampaignResponseDTO mapToDTO(Campaign campaign) {
 
         UserSummaryDTO userDTO = new UserSummaryDTO(

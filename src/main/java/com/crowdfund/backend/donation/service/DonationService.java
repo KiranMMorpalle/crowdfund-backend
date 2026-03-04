@@ -8,8 +8,23 @@ import java.util.UUID;
 
 public interface DonationService {
 
-    DonationResponseDTO donate(UUID campaignId, DonationRequestDTO request);
+    /**
+     * Step 1:
+     * Create donation with status = PENDING
+     * Generate UPI payment reference on frontend
+     */
+    DonationResponseDTO donate(UUID campaignId, UUID userId, DonationRequestDTO request);
 
+    /**
+     * Step 2:
+     * After user completes UPI payment and clicks confirm
+     * Change status to SUCCESS and increment campaign raisedAmount
+     */
+    DonationResponseDTO confirmDonation(UUID donationId);
+
+    /**
+     * View all donations for a campaign
+     */
     List<DonationResponseDTO> getDonations(UUID campaignId);
 
 }

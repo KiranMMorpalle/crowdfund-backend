@@ -2,19 +2,20 @@ package com.crowdfund.backend.campaign.domain;
 
 import com.crowdfund.backend.user.domain.User;
 import jakarta.persistence.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(
         name = "campaigns",
         indexes = {
-                // Most public queries filter by status.
                 @Index(name = "idx_campaign_status", columnList = "status"),
-
-                // For fetching campaigns by creator.
-                @Index(name = "idx_campaign_created_by", columnList = "created_by")
+                @Index(name = "idx_campaign_created_by", columnList = "created_by"),
+                @Index(name = "idx_campaign_category", columnList = "category")
         }
 )
 public class Campaign {
@@ -23,34 +24,66 @@ public class Campaign {
     @GeneratedValue
     private UUID id;
 
+    @Column(nullable = false)
     private String title;
 
-    @Column(length = 2000)
+    // NEW: Category (MEDICAL, EDUCATION, etc.)
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private CampaignCategory category;
+
+    // NEW: Beneficiary & Organizer Details
+    @Column(nullable = false)
+    private String beneficiaryName;
+
+    @Column(nullable = false)
+    private String organizerName;
+
+    @Column(nullable = false)
+    private String location;
+
+    // UPDATED: Long form story (ImpactGuru style)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String description;
 
-    private BigDecimal targetAmount;     // BigDecimal avoids floating precision issues.
+    // Financial fields (precision-safe)
+    @Column(nullable = false, precision = 15, scale = 2)
+    private BigDecimal targetAmount;
+
+    @Column(nullable = false, precision = 15, scale = 2)
     private BigDecimal raisedAmount = BigDecimal.ZERO;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private CampaignStatus status = CampaignStatus.PENDING;
 
-    @ManyToOne(fetch = FetchType.LAZY)     // LAZY loading improves performance.
+    // Cover image path (stored locally)
+    private String coverImagePath;
+
+    // Campaign owner
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", nullable = false)
     private User createdBy;
 
+    // Supporting documents
+    @OneToMany(mappedBy = "campaign", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CampaignDocument> documents = new ArrayList<>();
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    @Version    // Optimistic locking => Prevents lost update problem during concurrent donations.
-    private  Long version;
-
+    // Optimistic locking
+    @Version
+    private Long version;
 
     public Campaign() {}
 
     @PrePersist
     protected void onCreate(){
         this.createdAt = LocalDateTime.now();
+        if (this.raisedAmount == null) {
+            this.raisedAmount = BigDecimal.ZERO;
+        }
     }
 
     @PreUpdate
@@ -58,8 +91,9 @@ public class Campaign {
         this.updatedAt = LocalDateTime.now();
     }
 
-    // getters and setters
-
+    // ======================
+    // Getters and Setters
+    // ======================
 
     public UUID getId() {
         return id;
@@ -75,6 +109,38 @@ public class Campaign {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public CampaignCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(CampaignCategory category) {
+        this.category = category;
+    }
+
+    public String getBeneficiaryName() {
+        return beneficiaryName;
+    }
+
+    public void setBeneficiaryName(String beneficiaryName) {
+        this.beneficiaryName = beneficiaryName;
+    }
+
+    public String getOrganizerName() {
+        return organizerName;
+    }
+
+    public void setOrganizerName(String organizerName) {
+        this.organizerName = organizerName;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public String getDescription() {
@@ -109,6 +175,14 @@ public class Campaign {
         this.status = status;
     }
 
+    public String getCoverImagePath() {
+        return coverImagePath;
+    }
+
+    public void setCoverImagePath(String coverImagePath) {
+        this.coverImagePath = coverImagePath;
+    }
+
     public User getCreatedBy() {
         return createdBy;
     }
@@ -117,50 +191,23 @@ public class Campaign {
         this.createdBy = createdBy;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public List<CampaignDocument> getDocuments() {
+        return documents;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setDocuments(List<CampaignDocument> documents) {
+        this.documents = documents;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
     public Long getVersion() {
         return version;
     }
-
-    public void setVersion(Long version) {
-        this.version = version;
-    }
 }
-
-
-
-
-
-
-
-
-
-/*
--------------------------------------------------------
-SUMMARY:
-Core fundraising entity.
-
-Supports:
-- Financial tracking
-- Approval workflow
-- Ownership mapping
-- Concurrency control (@Version)
-
-UUID makes it production-ready.
--------------------------------------------------------
-*/

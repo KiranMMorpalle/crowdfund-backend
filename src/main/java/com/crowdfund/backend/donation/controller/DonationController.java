@@ -1,11 +1,11 @@
 package com.crowdfund.backend.donation.controller;
 
-//import com.crowdfund.backend.common.response.ApiResponse;
 import com.crowdfund.backend.campaign.dto.ApiResponse;
 import com.crowdfund.backend.donation.dto.DonationRequestDTO;
 import com.crowdfund.backend.donation.dto.DonationResponseDTO;
 import com.crowdfund.backend.donation.service.DonationService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,20 +21,47 @@ public class DonationController {
         this.donationService = donationService;
     }
 
-    @PostMapping("/{id}/donate")
+    /**
+     * USER only: Create donation (PENDING)
+     */
+    @PreAuthorize("hasRole('USER')")
+    @PostMapping("/{campaignId}/donate")
     public ResponseEntity<ApiResponse<DonationResponseDTO>> donate(
-            @PathVariable UUID id,
+            @PathVariable UUID campaignId,
+            @RequestParam UUID userId,
             @RequestBody DonationRequestDTO request) {
 
-        DonationResponseDTO response = donationService.donate(id, request);
+        DonationResponseDTO response =
+                donationService.donate(campaignId, userId, request);
+
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
-    @GetMapping("/{id}/donations")
-    public ResponseEntity<ApiResponse<List<DonationResponseDTO>>> getDonations(
-            @PathVariable UUID id) {
+    /**
+     * ADMIN only: Confirm donation (SUCCESS)
+     */
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/donations/{donationId}/confirm")
+    public ResponseEntity<ApiResponse<DonationResponseDTO>> confirmDonation(
+            @PathVariable UUID donationId) {
 
-        List<DonationResponseDTO> donations = donationService.getDonations(id);
+        DonationResponseDTO response =
+                donationService.confirmDonation(donationId);
+
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    /**
+     * ADMIN only: View all donations for campaign
+     */
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/{campaignId}/donations")
+    public ResponseEntity<ApiResponse<List<DonationResponseDTO>>> getDonations(
+            @PathVariable UUID campaignId) {
+
+        List<DonationResponseDTO> donations =
+                donationService.getDonations(campaignId);
+
         return ResponseEntity.ok(ApiResponse.success(donations));
     }
 }

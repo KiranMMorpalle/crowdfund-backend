@@ -1,13 +1,13 @@
 package com.crowdfund.backend.user.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-
-@Entity    // @Entity tells JPA that this class should map to a database table.
+@Entity
 @Table(
         name = "users",
         uniqueConstraints = {
@@ -15,44 +15,67 @@ import java.util.UUID;
         },
         indexes = {
                 @Index(name = "idx_user_role", columnList = "role"),
-                @Index(name = "idx_user_at", columnList = "created_at")
+                @Index(name = "idx_user_created_at", columnList = "created_at")
         }
 )
 public class User {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)   // Email is unique because login is based on email.
+    @Column(nullable = false, unique = true)
     private String email;
 
+    /**
+     * Stored hashed password only.
+     * Never expose in API responses.
+     */
     @JsonIgnore
-    private String passwordHash;   //never store raw password only hashed password
+    @Column(name = "password_hash", nullable = false)
+    private String passwordHash;
+
+    /**
+     * Raw password field (ONLY for request input).
+     * Not stored in database.
+     */
+    @Transient
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String password;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role = Role.USER;
 
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public User(){
-
+    public User() {
     }
 
-    @PrePersist      // Automatically set timestamp before insert.
-    protected void onCreate(){
+    // ========================
+    // Lifecycle Callbacks
+    // ========================
+
+    @PrePersist
+    protected void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
 
-    @PreUpdate          // Automatically update timestamp before update.
-    protected void onUpdate(){
+    @PreUpdate
+    protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
 
-    // Getters and Setters
-
+    // ========================
+    // Getters & Setters
+    // ========================
 
     public UUID getId() {
         return id;
@@ -86,6 +109,14 @@ public class User {
         this.passwordHash = passwordHash;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public Role getRole() {
         return role;
     }
@@ -98,51 +129,7 @@ public class User {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
 }
-
-
-
-
-
-
-/*
- --------------------------------------------------------
- CLASS SUMMARY:
- --------------------------------------------------------
- Represents system identity.
- Supports:
-- Campaign creation
-- Donation ownership
-- Role-based access
-
-UUID ensures safe exposure in APIs.
-
- Indexed for:
- - Login (email unique)
- - Role filtering (admin queries)
- --------------------------------------------------------
-*/
-
-
-/*
- * UUID used instead of Long for:
- * - Global uniqueness
- * - API safety
- * - Future microservice compatibility
-
-
- EnumType.STRING stores readable values like 'ADMIN'
- instead of numeric ordinal values
- */
-
