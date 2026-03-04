@@ -12,7 +12,8 @@ designed with enterprise-grade architecture principles.
 - Spring Data JPA (Hibernate)
 - PostgreSQL
 - Maven
-- Docker (Planned)
+- Razorpay Payment Gateway
+- JWT Authentication
 - UUID-based identity
 - Optimistic locking
 - Role-Based Access Control
@@ -27,6 +28,7 @@ designed with enterprise-grade architecture principles.
 - Optimistic locking for concurrency
 - Role-Based Access Control (RBAC)
 - Indexed query optimization
+- Modular payment integration
 
 ---
 
@@ -35,11 +37,28 @@ designed with enterprise-grade architecture principles.
 com.crowdfund.backend
 │
 ├── campaign
+│ ├── controller
+│ ├── service
+│ ├── repository
+│ └── domain
+│
+├── donation
+│ ├── controller
+│ ├── service
+│ ├── repository
+│ └── domain
+│
+├── payment
+│ ├── controller
+│ ├── service
+│ ├── repository
+│ └── domain
+│
+├── auth
+│
 ├── user
-├── auth (planned)
-├── ai (planned)
+│
 └── common
-
 ---
 
 ## 🧠 Design Decisions
@@ -47,27 +66,36 @@ com.crowdfund.backend
 - UUID used instead of Long for global uniqueness
 - BigDecimal used for monetary calculations
 - @Version used for optimistic locking
-- Indexing applied based on query patterns
+- Indexed columns for query optimization
 - Clean separation of domain logic
+- Feature-based modular architecture
+- Secure webhook-based payment confirmation
 
 ---
 
-## 📊 Version Milestones
+# 📊 Version Milestones
 
-| Day   | Version | Description                         |
-| ----- | ------- | ----------------------------------- |
-| Day 1 | v1.0.0  | Domain + Repository Foundation      |
-| Day 2 | v1.1.0  | Service Layer + Business Validation |
-| Day 3 | v1.2.0  | REST Controllers                    |
-| Day 4 | v1.3.0  | Donation + Concurrency              |
-| Day 5 | v2.0.0  | JWT Security                        |
-| Day 7 | v3.0.0  | Deployment                          |
+| Day | Version | Description |
+|----|----|----|
+| Day 1 | v1.0.0 | Domain + Repository Foundation |
+| Day 2 | v1.1.0 | Service Layer + Business Validation |
+| Day 3 | v1.2.0 | REST Controllers |
+| Day 4 | v1.3.0 | Donation + Concurrency |
+| Day 5 | v2.0.0 | JWT Authentication |
+| Day 6 | v2.1.0 | Payment Module + Razorpay |
+| Day 7 | v3.0.0 | Deployment |
 
 ---
-## 📌 Current Status
+# 📌 Current Status
 
-Foundation complete.  
-Ready for service layer implementation.
+Core crowdfunding platform implemented with:
+
+- Campaign management
+- Secure donations
+- Payment gateway integration
+- Authentication and authorization
+
+System supports **real-world payment flow using Razorpay webhooks.**
 
 ---
 ## 📌 Day 2 – Service Layer Implementation
@@ -186,16 +214,98 @@ GET http://localhost:8080/api/v1/campaigns/{id}/donations
 - Returns 409 on version conflict
 - Ensures financial consistency
 
-## Status
-Day 4 complete.
+---
 
+# 📌 Day 5 – JWT Security
+
+### Implemented
+
+- JWT authentication
+- Login endpoint
+- Role-based access control
+- Token-based API protection
+- Custom user authentication service
 
 ---
-## 🔜 Roadmap
 
-- Day 2 – Service Layer
-- Day 3 – REST Controllers
-- Day 4 – Donation + Concurrency
-- Day 5 – JWT Security
-- Day 6 – Testing
-- Day 7 – Deployment
+# 📌 Day 6 – Payment Module
+
+### 🎯 Objective
+
+Implement production-style payment flow using Razorpay.
+
+---
+
+## Features Implemented
+
+- Payment entity
+- Payment status tracking
+- Razorpay order creation
+- Payment verification
+- Webhook-based payment confirmation
+- Donation status update after successful payment
+
+---
+
+## Payment Flow
+
+Create Donation
+↓
+Create Razorpay Order
+↓
+User Payment via Razorpay
+↓
+Razorpay Webhook
+↓
+Backend verifies event
+↓
+Payment SUCCESS
+↓
+Donation SUCCESS
+
+---
+
+## Webhook Endpoint
+
+POST /api/v1/payments/webhook
+
+
+Triggered automatically by Razorpay when payment is captured.
+
+---
+
+## Security
+
+- Webhook signature validation
+- Payment status integrity
+- Transactional updates
+- Enum-based payment states
+
+---
+
+# 🧪 Manual Testing
+
+Tested using Postman and Razorpay test mode.
+
+Verified scenarios:
+
+- Campaign creation
+- Donation creation
+- Razorpay order generation
+- Payment success webhook
+- Donation status update
+- Concurrency safety
+
+---
+
+# 🔜 Roadmap
+
+Upcoming improvements:
+
+- Docker deployment
+- Campaign media uploads
+- Admin dashboard APIs
+- Payment failure recovery
+- Monitoring & logging
+---
+

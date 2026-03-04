@@ -58,3 +58,11 @@ Thumbs.db
 # Maven Wrapper (keep wrapper config, ignore jar)
 # ===============================
 .mvn/wrapper/maven-wrapper.jar
+
+
+
+
+
+# Spring config secrets
+src/main/resources/application.properties
+src/main/resources/application.yml
