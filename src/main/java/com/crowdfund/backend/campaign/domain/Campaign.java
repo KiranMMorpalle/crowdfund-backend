@@ -1,5 +1,6 @@
 package com.crowdfund.backend.campaign.domain;
 
+import com.crowdfund.backend.document.domain.CampaignDocument;
 import com.crowdfund.backend.user.domain.User;
 import jakarta.persistence.*;
 
