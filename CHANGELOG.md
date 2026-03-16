@@ -239,6 +239,36 @@ User Registration
 
 ---
 
+## [v3.1.0] - Redis Caching Integration
+
+### Added
+- Integrated Redis caching for performance optimization.
+- Added Redis dependency: `spring-boot-starter-data-redis`.
+- Enabled caching using `@EnableCaching` in the main application class.
+- Implemented Redis cache manager configuration (`RedisConfig.java`).
+
+### Caching Implemented
+- Campaign details (`getApprovedCampaignById`)
+- Campaign search results (`searchCampaigns`)
+
+### Cache Eviction
+- Cache invalidation added when campaigns are updated.
+
+### Infrastructure
+- Redis container support via Docker.
+
+Run Redis locally:
+ ``` docker run -d -p 6379:6379 redis ```
+
+
+### Notes
+- Caching applied only to read-heavy endpoints.
+- Donation and authentication flows are excluded from caching.
+
+
+
+---
+
 ## Next Planned Improvements
 
 - Docker containerization

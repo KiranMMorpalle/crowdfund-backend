@@ -451,11 +451,150 @@ This displays:
 - `BOOT-INF/classes` → application classes
 - `BOOT-INF/lib` → dependencies
 
+
 ---
+
+## 📄 Redis Caching
+
+### Overview
+Redis caching is implemented to improve performance by reducing repeated database queries for frequently accessed campaign data.
+
+The cache layer stores responses in Redis so repeated API calls can be served faster without hitting the database.
+
+This is particularly useful for:
+- Campaign detail retrieval
+- Campaign search results
+
+---
+
+### Redis Setup
+
+Redis is run locally using Docker.
+
+Start Redis container:
+
+```bash
+docker run -d -p 6379:6379 redis
+````
+
+Spring Boot connects to Redis using the following configuration:
+
+```
+spring.cache.type=redis
+spring.redis.host=localhost
+spring.redis.port=6379
 ```
 
-You can **directly paste this entire block into README.md**.
+---
 
+### Spring Boot Configuration
+
+Caching is enabled in the main application class.
+
+```java
+@EnableCaching
+```
+
+This allows Spring to manage caching using annotations.
+
+---
+
+### Redis Cache Configuration
+
+A Redis cache manager configuration was added to explicitly define the cache manager bean.
+
+```
+src/main/java/com/crowdfund/backend/config/RedisConfig.java
+```
+
+```java
+@Configuration
+public class RedisConfig {
+
+    @Bean
+    public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
+        return RedisCacheManager.create(connectionFactory);
+    }
+}
+```
+
+---
+
+### Cache Annotations Used
+
+Caching is implemented at the **service layer**.
+
+#### Cache Campaign by ID
+
+```
+CampaignServiceImpl#getApprovedCampaignById
+```
+
+```java
+@Cacheable(value = "campaign", key = "#campaignId")
+```
+
+This caches campaign details to avoid repeated database queries.
+
+---
+
+#### Cache Campaign Search
+
+```
+CampaignServiceImpl#searchCampaigns
+```
+
+```java
+@Cacheable(
+ value = "campaignSearch",
+ key = "#keyword + '-' + #category + '-' + #page + '-' + #size + '-' + #sortDir"
+)
+```
+
+This caches campaign search results.
+
+---
+
+#### Cache Eviction on Update
+
+```
+CampaignServiceImpl#updateCampaign
+```
+
+```java
+@CacheEvict(value = {"campaign","campaignSearch"}, allEntries = true)
+```
+
+Cache entries are cleared when campaigns are updated to prevent stale data.
+
+---
+
+### Dependency Added
+
+```
+spring-boot-starter-data-redis
+```
+
+This enables Redis integration with Spring Boot caching.
+
+---
+
+### Notes
+
+* Redis is used only for read-heavy operations.
+* Financial operations such as donations are **not cached**.
+* Authentication flows using JWT are **not cached** for security reasons.
+
+
+
+docker run -d -p 6379:6379 redis
+
+```
+
+### Notes
+- Caching applied only to read-heavy endpoints.
+- Donation and authentication flows are excluded from caching.
+```
 
 
 

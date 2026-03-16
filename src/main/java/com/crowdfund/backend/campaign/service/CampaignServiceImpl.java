@@ -13,6 +13,8 @@ import com.crowdfund.backend.common.exception.UnauthorizedOperationException;
 import com.crowdfund.backend.user.domain.Role;
 import com.crowdfund.backend.user.domain.User;
 import com.crowdfund.backend.user.repository.UserRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -124,6 +126,7 @@ public class CampaignServiceImpl implements CampaignService {
 
     @Override
     @Transactional
+    @CacheEvict(value = {"campaign","campaignSearch"}, allEntries = true)
     public CampaignResponseDTO updateCampaign(UUID campaignId, CampaignRequest request, String userEmail) {
 
         User user = userRepository.findByEmail(userEmail)
@@ -202,6 +205,7 @@ public class CampaignServiceImpl implements CampaignService {
     }
 
     @Override
+    @Cacheable(value = "campaignSearch", key = "#keyword + '-' + #category + '-' + #page + '-' + #size + '-' + #sortDir")
     public List<CampaignResponseDTO> searchCampaigns(
             String keyword,
             CampaignCategory category,
@@ -224,10 +228,7 @@ public class CampaignServiceImpl implements CampaignService {
                         pageable
                 );
 
-        return result
-                .stream()
-                .map(this::mapToDTO)
-                .toList();
+        return result.map(this::mapToDTO).getContent();
     }
 
 
@@ -242,6 +243,7 @@ public class CampaignServiceImpl implements CampaignService {
     }
 
     @Override
+    @Cacheable(value = "campaign", key = "#campaignId")
     public CampaignResponseDTO getApprovedCampaignById(UUID campaignId) {
         Campaign campaign = campaignRepository
                 .findByIdAndStatus(campaignId, CampaignStatus.APPROVED)
