@@ -265,6 +265,40 @@ Run Redis locally:
 - Caching applied only to read-heavy endpoints.
 - Donation and authentication flows are excluded from caching.
 
+---
+
+## v3.2.0 — Swagger API Documentation
+
+### Added
+- Integrated **Swagger (SpringDoc OpenAPI)** for automatic API documentation.
+- Added dependency:
+    - `springdoc-openapi-starter-webmvc-ui`
+- Created `SwaggerConfig` to define API metadata (title, description, version).
+
+### Security Update
+- Allowed Swagger endpoints in `SecurityConfig`:
+    - `/swagger-ui/**`
+    - `/swagger-ui.html`
+    - `/v3/api-docs/**`
+    - `http://localhost:8080/swagger-ui/index.html`
+    - `http://localhost:8080/v3/api-docs`
+
+### Dependency Fixes
+- Removed invalid dependencies:
+    - `spring-boot-starter-webmvc`
+    - `spring-boot-starter-webmvc-test`
+    - `spring-boot-starter-data-jpa-test`
+
+- Replaced with correct dependencies:
+    - `spring-boot-starter-web`
+    - `spring-boot-starter-test`
+
+### Compatibility Adjustment
+- Changed **Spring Boot version** from `4.0.2` → `3.3.2` to ensure Swagger compatibility.
+
+### Access
+Swagger UI available at:
+
 
 
 ---

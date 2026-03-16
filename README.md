@@ -599,6 +599,298 @@ docker run -d -p 6379:6379 redis
 
 
 ---
+
+Below is a **complete Markdown section** you can paste directly into your **README.md**.
+It includes **what Swagger is, why used, how implemented, changes made, dependencies fixed, and how to access it**.
+
+---
+
+````markdown
+# 📘 API Documentation — Swagger (OpenAPI)
+
+## Overview
+
+Swagger (OpenAPI) is used in this project to provide **interactive API documentation** for the Crowdfunding backend.
+
+It automatically scans all Spring Boot REST controllers and generates a **visual interface** where developers can:
+
+- View all available APIs
+- Inspect request and response models
+- Test endpoints directly from the browser
+- Understand the backend architecture easily
+
+This helps developers and reviewers quickly explore the backend system without needing tools like Postman.
+
+---
+
+# Why Swagger Was Added
+
+Swagger was integrated to improve:
+
+- API discoverability
+- Developer documentation
+- Backend testing
+- System demonstration during interviews
+- Faster debugging of endpoints
+
+Instead of manually writing API documentation, Swagger **generates it automatically from the codebase**.
+
+---
+
+# Swagger Dependency
+
+Swagger was implemented using **SpringDoc OpenAPI**.
+
+Dependency used:
+
+```xml
+<dependency>
+    <groupId>org.springdoc</groupId>
+    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+    <version>2.5.0</version>
+</dependency>
+````
+
+This dependency automatically provides:
+
+* OpenAPI specification generator
+* Swagger UI interface
+* API schema generation
+
+---
+
+# Spring Boot Compatibility Adjustment
+
+Originally, the project used:
+
+```
+Spring Boot 4.0.2
+```
+
+However, Swagger (SpringDoc OpenAPI) currently has compatibility issues with Spring Boot 4, which caused runtime errors during API documentation generation.
+
+To ensure stable integration, the project was adjusted to:
+
+```
+Spring Boot 3.3.2
+```
+
+This version is fully compatible with:
+
+* Java 17
+* Swagger (SpringDoc)
+* Spring Security
+* Redis
+* PostgreSQL
+* Actuator
+* JPA
+
+No application logic or architecture was changed during this adjustment.
+
+---
+
+# Dependency Corrections
+
+While integrating Swagger, several incorrect Maven dependencies were discovered and replaced.
+
+### Removed Invalid Dependencies
+
+These dependencies do not exist in Maven Central:
+
+```xml
+spring-boot-starter-webmvc
+spring-boot-starter-webmvc-test
+spring-boot-starter-data-jpa-test
+```
+
+### Correct Dependencies Used
+
+These were replaced with the proper Spring Boot starters:
+
+```xml
+spring-boot-starter-web
+spring-boot-starter-data-jpa
+spring-boot-starter-test
+```
+
+These provide the official Spring Boot web, persistence, and testing support.
+
+---
+
+# Swagger Configuration
+
+A configuration class was added to define API metadata.
+
+File location:
+
+```
+src/main/java/com/crowdfund/backend/config/SwaggerConfig.java
+```
+
+Implementation:
+
+```java
+package com.crowdfund.backend.config;
+
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class SwaggerConfig {
+
+    @Bean
+    public OpenAPI openAPI() {
+
+        return new OpenAPI()
+                .info(new Info()
+                        .title("Crowdfunding Platform API")
+                        .description("API documentation for Crowdfunding Backend")
+                        .version("v1.0"));
+    }
+
+}
+```
+
+This configuration defines:
+
+* API title
+* API description
+* API version
+
+---
+
+# Security Configuration Update
+
+Since the application uses **JWT-based authentication**, Swagger endpoints needed to be publicly accessible.
+
+The following paths were added to the `permitAll()` section in `SecurityConfig`:
+
+```java
+"/swagger-ui/**",
+"/swagger-ui.html",
+"/v3/api-docs/**"
+```
+
+Example configuration snippet:
+
+```java
+.authorizeHttpRequests(auth -> auth
+        .requestMatchers(
+                "/api/v1/auth/**",
+                "/api/v1/users",
+                "/swagger-ui/**",
+                "/swagger-ui.html",
+                "/v3/api-docs/**"
+        ).permitAll()
+        .anyRequest().authenticated()
+)
+```
+
+This ensures:
+
+* Swagger UI is publicly accessible
+* All other APIs remain protected by JWT authentication.
+
+---
+
+# Swagger UI Access
+
+After starting the application, Swagger documentation can be accessed at:
+
+```
+http://localhost:8080/swagger-ui/index.html
+```
+
+This interface allows users to:
+
+* Browse all APIs
+* View request parameters
+* Execute API calls
+* Inspect responses
+
+---
+
+# Swagger API Specification Endpoint
+
+Swagger automatically exposes the OpenAPI specification at:
+
+```
+/v3/api-docs
+```
+
+This endpoint returns the complete **OpenAPI JSON specification** of the backend.
+
+---
+
+# Controllers Automatically Documented
+
+Swagger automatically scans and documents all REST controllers including:
+
+* AuthController
+* CampaignController
+* DonationController
+* PaymentController
+* UserController
+
+No additional code is required for basic documentation.
+
+---
+
+# Optional Enhancements (Future)
+
+Swagger supports additional annotations for richer documentation:
+
+```
+@Tag
+@Operation
+@Schema
+@ApiResponse
+```
+
+Example:
+
+```java
+@Tag(name = "Authentication APIs")
+@RestController
+@RequestMapping("/api/v1/auth")
+public class AuthController
+```
+
+These annotations improve:
+
+* endpoint descriptions
+* request schema documentation
+* response details
+
+---
+
+# Summary
+
+Swagger integration provides interactive API documentation for the Crowdfunding backend.
+
+Key implementation steps:
+
+1. Added SpringDoc OpenAPI dependency
+2. Adjusted Spring Boot version for compatibility
+3. Created Swagger configuration class
+4. Updated Spring Security to allow Swagger endpoints
+5. Corrected invalid Maven dependencies
+
+Swagger now allows developers to **explore and test backend APIs directly from the browser**.
+
+---
+
+## 📘 Interview-style answer (short and clear):
+
+In this project, I implemented **Swagger using SpringDoc OpenAPI** to automatically generate interactive API documentation for all REST endpoints. I added the `springdoc-openapi-starter-webmvc-ui` dependency, created a **Swagger configuration class** to define API metadata, and updated the **Spring Security configuration** to allow Swagger endpoints like `/swagger-ui` and `/v3/api-docs`. After running the application, Swagger UI is available at `http://localhost:8080/swagger-ui/index.html`, where all APIs can be viewed and tested.
+
+Swagger automatically scans the controllers and generates documentation, so **annotations are not mandatory**. However, for more detailed documentation we can add annotations like **`@Tag` on controllers and `@Operation` on endpoints** to provide descriptions of APIs and request/response models. In this project, the basic Swagger setup is implemented without annotations, but it can be enhanced with those annotations if more detailed API documentation is required.
+
+
+
+---
 # 🔜 Roadmap
 
 Upcoming improvements:
