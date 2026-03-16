@@ -21,4 +21,6 @@ public interface CampaignService {
     List<CampaignResponseDTO> getApprovedCampaigns();
 
     CampaignResponseDTO getApprovedCampaignById(UUID campaignId);
+
+    List<CampaignResponseDTO> getApprovedCampaigns(int page, int size);
 }

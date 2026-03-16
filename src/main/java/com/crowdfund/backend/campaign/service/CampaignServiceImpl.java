@@ -14,6 +14,8 @@ import com.crowdfund.backend.user.domain.User;
 import com.crowdfund.backend.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -211,6 +213,19 @@ public class CampaignServiceImpl implements CampaignService {
 
         return mapToDTO(campaign);
     }
+
+    @Override
+    public List<CampaignResponseDTO> getApprovedCampaigns(int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        return campaignRepository
+                .findByStatus(CampaignStatus.APPROVED, pageable)
+                .stream()
+                .map(this::mapToDTO)
+                .toList();
+    }
+
 
     private CampaignResponseDTO mapToDTO(Campaign campaign) {
 

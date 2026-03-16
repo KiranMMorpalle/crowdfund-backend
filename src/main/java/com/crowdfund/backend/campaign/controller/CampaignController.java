@@ -22,10 +22,12 @@ public class CampaignController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<CampaignResponseDTO>>> getApprovedCampaigns() {
+    public ResponseEntity<ApiResponse<List<CampaignResponseDTO>>> getApprovedCampaigns(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
         List<CampaignResponseDTO> campaigns =
-                campaignService.getApprovedCampaigns();
+                campaignService.getApprovedCampaigns(page, size);
 
         return ResponseEntity.ok(
                 new ApiResponse<>(true, "Campaigns fetched successfully", campaigns)
