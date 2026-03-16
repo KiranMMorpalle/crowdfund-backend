@@ -1,0 +1,95 @@
+Below is the **simple checklist list based on your file** — only **✔ implemented** and **❌ not implemented**.
+(No extra explanation.)
+
+---
+
+# Crowdfunding Backend – Implementation Checklist
+
+## Campaign Module
+
+* ✔ Create Campaign (`POST /api/v1/campaigns`) 
+
+* ✔ View All Campaigns (`GET /api/v1/campaigns`) 
+
+* ✔ View Campaign by ID (`GET /api/v1/campaigns/{id}`) 
+
+* ✔ Admin Approve Campaign (`PUT /api/v1/admin/campaigns/{id}/approve`) 
+
+* ✔ Admin Reject Campaign (`PUT /api/v1/admin/campaigns/{id}/reject`) 
+
+* ❌ Update Campaign
+
+* ❌ Delete Campaign
+
+* ❌ Pagination
+
+* ❌ Search Campaign
+
+* ❌ Filter by Category
+
+* ❌ Sort Campaigns
+
+---
+
+# Donation Module
+
+* ✔ Donate to Campaign (`POST /api/v1/campaigns/{id}/donate`) 
+* ✔ View Campaign Donations (`GET /api/v1/campaigns/{id}/donations`) 
+* ✔ Raised Amount Update on Donation 
+* ✔ Optimistic Locking for Concurrent Donations 
+
+---
+
+# Payment Module
+
+* ✔ Payment Entity
+* ✔ Razorpay Order Creation
+* ✔ Payment Verification
+* ✔ Webhook Payment Confirmation (`/api/v1/payments/webhook`) 
+* ✔ Donation Status Update After Payment 
+
+---
+
+# Authentication Module
+
+* ✔ Register API
+* ✔ Login API
+* ✔ JWT Token Generation
+* ✔ JWT Validation Filter
+* ✔ Spring Security Configuration
+* ✔ Role-Based Access Control 
+
+---
+
+# Architecture / Backend Design
+
+* ✔ UUID Primary Keys
+* ✔ Optimistic Locking (`@Version`)
+* ✔ DTO Boundary Pattern
+* ✔ Global Exception Handler
+* ✔ ApiResponse Wrapper
+* ✔ Role-based API separation
+* ✔ Layered Architecture (Controller → Service → Repository) 
+
+---
+
+# Infrastructure / DevOps
+
+* ❌ Redis Caching
+* ❌ Swagger Documentation
+* ❌ JUnit Tests
+* ❌ Monitoring / Logging
+* ❌ Docker Verified Deployment (not confirmed tested)
+
+---
+
+# Search / Listing System
+
+* ❌ Pagination
+* ❌ Search by Campaign Name
+* ❌ Filter by Category
+* ❌ Sort by Target Amount
+
+---
+
+If you want, I can also create a **clean “Project Progress Tracker” checklist** (very useful for interviews + GitHub README) that will look **much more professional than this internal list.**
