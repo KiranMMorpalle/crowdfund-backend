@@ -1,6 +1,7 @@
 package com.crowdfund.backend.campaign.service;
 
 import com.crowdfund.backend.campaign.domain.Campaign;
+import com.crowdfund.backend.campaign.domain.CampaignCategory;
 import com.crowdfund.backend.campaign.domain.CampaignStatus;
 import com.crowdfund.backend.campaign.dto.CampaignRequest;
 import com.crowdfund.backend.campaign.dto.CampaignResponseDTO;
@@ -14,8 +15,12 @@ import com.crowdfund.backend.user.domain.User;
 import com.crowdfund.backend.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -196,6 +201,37 @@ public class CampaignServiceImpl implements CampaignService {
         campaignRepository.delete(campaign);
     }
 
+    @Override
+    public List<CampaignResponseDTO> searchCampaigns(
+            String keyword,
+            CampaignCategory category,
+            int page,
+            int size,
+            String sortDir
+    ) {
+
+        Sort sort = sortDir.equalsIgnoreCase("asc")
+                ? Sort.by("targetAmount").ascending()
+                : Sort.by("targetAmount").descending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Campaign> result =
+                campaignRepository.findByStatusAndTitleContainingIgnoreCaseAndCategory(
+                        CampaignStatus.APPROVED,
+                        keyword == null ? "" : keyword,
+                        category == null ? CampaignCategory.OTHER : category,
+                        pageable
+                );
+
+        return result
+                .stream()
+                .map(this::mapToDTO)
+                .toList();
+    }
+
+
+// --------
 
     @Override
     public List<CampaignResponseDTO> getApprovedCampaigns() {

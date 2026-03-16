@@ -1,5 +1,6 @@
 package com.crowdfund.backend.campaign.controller;
 
+import com.crowdfund.backend.campaign.domain.CampaignCategory;
 import com.crowdfund.backend.campaign.dto.*;
 import com.crowdfund.backend.campaign.service.CampaignService;
 import org.springframework.http.HttpStatus;
@@ -21,18 +22,18 @@ public class CampaignController {
         this.campaignService = campaignService;
     }
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<CampaignResponseDTO>>> getApprovedCampaigns(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-
-        List<CampaignResponseDTO> campaigns =
-                campaignService.getApprovedCampaigns(page, size);
-
-        return ResponseEntity.ok(
-                new ApiResponse<>(true, "Campaigns fetched successfully", campaigns)
-        );
-    }
+//    @GetMapping
+//    public ResponseEntity<ApiResponse<List<CampaignResponseDTO>>> getApprovedCampaigns(
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "10") int size) {
+//
+//        List<CampaignResponseDTO> campaigns =
+//                campaignService.getApprovedCampaigns(page, size);
+//
+//        return ResponseEntity.ok(
+//                new ApiResponse<>(true, "Campaigns fetched successfully", campaigns)
+//        );
+//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<CampaignResponseDTO>> getById(@PathVariable UUID id) {
@@ -106,6 +107,24 @@ public class CampaignController {
 
         return ResponseEntity.ok(
                 new ApiResponse<>(true, "Campaign deleted successfully", null)
+        );
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<CampaignResponseDTO>>> searchCampaigns(
+
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) CampaignCategory category,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "asc") String sortDir
+    ) {
+
+        List<CampaignResponseDTO> campaigns =
+                campaignService.searchCampaigns(keyword, category, page, size, sortDir);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Campaigns fetched successfully", campaigns)
         );
     }
 

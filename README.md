@@ -144,12 +144,17 @@ Convert service layer into production-grade REST APIs with:
 
 ## 🔹 Public APIs
 
-| Method | Endpoint |
-|--------|----------|
-| POST   | `/api/v1/campaigns` |
-| GET    | `/api/v1/campaigns` |
-| GET    | `/api/v1/campaigns/{id}` |
-| PUT    | `/api/v1/campaigns/{id}` |
+| Method | Endpoint                                    |
+|--------|---------------------------------------------|
+| POST   | `/api/v1/campaigns`                         |
+| GET    | `/api/v1/campaigns`                         |
+| GET    | `/api/v1/campaigns?page={page}&size={size}` |
+| GET    | `/api/v1/campaigns?keyword={name}`          |
+| GET    | `/api/v1/campaigns?category={category}`     |
+| GET    | `/api/v1/campaigns?sortDir={asc/desc}`      |
+| GET    | `/api/v1/campaigns/{id}`                    |
+| PUT    | `/api/v1/campaigns/{id}`                    |
+
 
 ---
 
@@ -174,6 +179,7 @@ Convert service layer into production-grade REST APIs with:
 - Role-based access control (manual RBAC)
 - Status-based public filtering (only APPROVED visible)
 - API versioning (`/api/v1`)
+- Campaign listing supports search, category filtering, sorting, and pagination
 
 ---
 
@@ -185,6 +191,12 @@ Convert service layer into production-grade REST APIs with:
 - Unauthorized admin action → `403 FORBIDDEN`
 - Invalid data → `400 BAD_REQUEST`
 - Not found → `404 NOT_FOUND`
+- Campaign update → `200 OK`
+- Campaign delete by admin → `200 OK`
+- Campaign pagination → `200 OK`
+- Campaign search by name → `200 OK`
+- Campaign filter by category → `200 OK`
+- Campaign sorting by target amount → `200 OK`
 - Public visibility filtering verified
 
 ---

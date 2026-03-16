@@ -62,6 +62,7 @@ All notable changes to this project will be documented here.
 - Repository method `findByIdAndStatus` for secure public access
 - Campaign update API
 - Campaign delete API
+- Campaign listing enhanced with pagination, search by name, category filtering, and target amount sorting
 
 
 ### Verified
@@ -71,6 +72,12 @@ All notable changes to this project will be documented here.
 - Duplicate approval protection verified
 - PUT /api/v1/campaigns/{id}
 - DELETE /api/v1/campaigns/{id}
+- GET /api/v1/campaigns?page={page}&size={size}
+- GET /api/v1/campaigns?keyword={keyword}
+- GET /api/v1/campaigns?category={category}
+- GET /api/v1/campaigns?sortDir={asc|desc}
+- GET /api/v1/campaigns?page={page}&size={size}
+
 ---
 
 ## [v1.3.0] - Day 4 (Donation Module & Concurrency)

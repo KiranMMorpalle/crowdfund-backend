@@ -1,5 +1,6 @@
 package com.crowdfund.backend.campaign.service;
 
+import com.crowdfund.backend.campaign.domain.CampaignCategory;
 import com.crowdfund.backend.campaign.dto.CampaignRequest;
 import com.crowdfund.backend.campaign.dto.CampaignResponseDTO;
 
@@ -23,4 +24,12 @@ public interface CampaignService {
     CampaignResponseDTO getApprovedCampaignById(UUID campaignId);
 
     List<CampaignResponseDTO> getApprovedCampaigns(int page, int size);
+
+    List<CampaignResponseDTO> searchCampaigns(
+            String keyword,
+            CampaignCategory category,
+            int page,
+            int size,
+            String sortDir
+    );
 }
