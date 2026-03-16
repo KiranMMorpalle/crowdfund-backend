@@ -312,6 +312,154 @@ Verified scenarios:
 
 ---
 
+# 🐳 Docker Deployment
+
+## Overview
+
+The backend can be containerized using Docker to ensure consistent execution across environments.
+
+The Docker container packages the Spring Boot application along with its runtime dependencies.
+
+---
+
+## Build Application
+
+Generate the executable Spring Boot JAR.
+
+```
+
+./mvnw clean package
+
+```
+
+Generated artifact:
+
+```
+
+target/*.jar
+
+```
+
+---
+
+## Build Docker Image
+
+Create the Docker image from the Dockerfile.
+
+```
+
+docker build -t crowdfunding-app .
+
+```
+
+This packages the Spring Boot application into a container image.
+
+---
+
+## Run Docker Container
+
+Start the application container.
+
+```
+
+docker run -p 8080:8080 crowdfunding-app
+
+```
+
+Application will be accessible at:
+
+```
+
+[http://localhost:8080](http://localhost:8080)
+
+```
+
+---
+
+## Database Configuration for Docker
+
+Since PostgreSQL runs on the host machine, the datasource URL must allow container access.
+
+```
+
+spring.datasource.url=jdbc:postgresql://host.docker.internal:5432/crowdfund
+
+```
+
+---
+
+## PostgreSQL Configuration
+
+Docker containers connect from a different network interface, so PostgreSQL must allow external connections.
+
+Edit the PostgreSQL configuration file:
+
+```
+
+C:\Program Files\PostgreSQL\18\data\pg_hba.conf
+
+```
+
+Add the following line:
+
+```
+
+host all all 0.0.0.0/0 md5
+
+```
+
+Restart the PostgreSQL service after updating the configuration.
+
+---
+
+## Inspect Docker Image (Optional)
+
+Open container shell:
+
+```
+
+docker run -it --entrypoint sh crowdfunding-app
+
+```
+
+Check files inside container:
+
+```
+
+ls
+
+```
+
+Expected output:
+
+```
+
+app.jar
+
+```
+
+To inspect JAR structure:
+
+```
+
+jar tf app.jar
+
+```
+
+This displays:
+
+- `BOOT-INF/classes` → application classes
+- `BOOT-INF/lib` → dependencies
+
+---
+```
+
+You can **directly paste this entire block into README.md**.
+
+
+
+
+---
 # 🔜 Roadmap
 
 Upcoming improvements:

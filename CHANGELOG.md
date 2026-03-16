@@ -189,6 +189,35 @@ All notable changes to this project will be documented here.
 
 ---
 
+---
+
+## [v3.0.0] - Day 7 (Docker Containerization)
+
+### Added
+- Dockerfile for containerizing the Spring Boot backend
+- Docker image build process
+- Docker container runtime configuration
+- Containerized deployment for the crowdfunding backend
+
+### Deployment Setup
+- Application packaged using Maven Wrapper (`./mvnw clean package`)
+- Docker image built using `docker build`
+- Container started using `docker run -p 8080:8080`
+
+### Database Configuration
+- Updated datasource URL to allow Docker container access:
+
+  `jdbc:postgresql://host.docker.internal:5432/crowdfund`
+
+- PostgreSQL `pg_hba.conf` updated to allow container connections.
+
+### Verified
+- Docker image successfully built
+- Spring Boot application started inside container
+- PostgreSQL connection established from container
+- Application accessible via `http://localhost:8080`
+
+---
 ## Current System Status
 
 Completed modules:
