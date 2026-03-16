@@ -1,0 +1,471 @@
+# 🧪 Backend Testing Documentation
+
+This document tracks all **unit and controller testing implementations** across modules in the backend.
+
+Testing is implemented using:
+
+* **JUnit 5**
+* **Mockito**
+* **Spring Boot Test**
+* **MockMvc**
+
+Purpose of testing:
+
+* Verify business logic correctness
+* Ensure API endpoints behave correctly
+* Detect bugs early in development
+* Maintain stable backend behavior during refactoring
+
+---
+
+# Auth Module Testing
+
+## Overview
+
+Testing was implemented for the **authentication module** to verify:
+
+* User registration
+* User login
+* Error handling
+* Validation handling
+
+Two types of tests were created:
+
+| Test Type            | File                 |
+| -------------------- | -------------------- |
+| Service Layer Tests  | `AuthServiceTest`    |
+| Controller/API Tests | `AuthControllerTest` |
+
+---
+
+# Service Layer Tests
+
+**File**
+
+```
+AuthServiceTest
+```
+
+Purpose:
+
+Test the **business logic inside AuthServiceImpl** without running the full Spring Boot application.
+
+Dependencies mocked using **Mockito**.
+
+### Tested Scenarios
+
+1️⃣ **User Registration Success**
+
+Expected result:
+
+* User does not already exist
+* Password is encoded
+* User is saved successfully
+* JWT token is generated
+
+Test case:
+
+```
+shouldRegisterUserSuccessfully
+```
+
+---
+
+2️⃣ **Duplicate Email Registration**
+
+Expected result:
+
+* Registration fails if email already exists
+
+Test case:
+
+```
+shouldThrowErrorWhenEmailAlreadyExists
+```
+
+---
+
+3️⃣ **Successful Login**
+
+Expected result:
+
+* User email exists
+* Password matches
+* JWT token generated
+
+Test case:
+
+```
+shouldLoginSuccessfully
+```
+
+---
+
+4️⃣ **Login Failure (User Not Found)**
+
+Expected result:
+
+* Login fails when email does not exist
+
+Test case:
+
+```
+shouldThrowErrorWhenUserNotFoundDuringLogin
+```
+
+---
+
+# Controller Layer Tests
+
+**File**
+
+```
+AuthControllerTest
+```
+
+Purpose:
+
+Test **REST API endpoints** using `MockMvc`.
+
+This ensures:
+
+* HTTP endpoints behave correctly
+* Response status codes are correct
+* Request validation works properly
+
+Security filters were disabled in tests to isolate controller behavior.
+
+```
+@AutoConfigureMockMvc(addFilters = false)
+```
+
+Security configuration was imported:
+
+```
+@Import(SecurityConfig.class)
+```
+
+---
+
+# Tested API Endpoints
+
+### Register Endpoint
+
+```
+POST /api/v1/auth/register
+```
+
+---
+
+### Login Endpoint
+
+```
+POST /api/v1/auth/login
+```
+
+---
+
+# Controller Test Cases
+
+1️⃣ **Successful User Registration**
+
+Expected result:
+
+```
+HTTP 200 OK
+```
+
+Test case:
+
+```
+shouldRegisterUserSuccessfully
+```
+
+---
+
+2️⃣ **Successful Login**
+
+Expected result:
+
+```
+HTTP 200 OK
+```
+
+Test case:
+
+```
+shouldLoginSuccessfully
+```
+
+---
+
+3️⃣ **Invalid Registration Request**
+
+Scenario:
+
+Empty request body or invalid fields.
+
+Expected result:
+
+```
+HTTP 400 BAD_REQUEST
+```
+
+Test case:
+
+```
+shouldReturnBadRequestForInvalidRegisterRequest
+```
+
+---
+
+# Validation Improvements Implemented
+
+To support controller testing, validation was added to request DTOs.
+
+Example validations added:
+
+* Name → required
+* Email → required and valid format
+* Password → required
+* Role → required
+
+Validation annotations used:
+
+```
+@NotBlank
+@Email
+```
+
+---
+
+# Global Exception Handling Improvement
+
+A new handler was added to support validation errors:
+
+```
+MethodArgumentNotValidException
+```
+
+Expected behavior:
+
+```
+Invalid request → HTTP 400
+```
+
+Previously:
+
+```
+Validation error → HTTP 500
+```
+
+Now corrected through the GlobalExceptionHandler.
+
+---
+
+# Dependencies Used for Testing
+
+```
+spring-boot-starter-test
+spring-boot-starter-validation
+mockito-core
+mockito-junit-jupiter
+```
+
+---
+
+# Final Test Coverage (Auth Module)
+
+| Layer      | Test File          | Status    |
+| ---------- | ------------------ | --------- |
+| Service    | AuthServiceTest    | ✅ Passing |
+| Controller | AuthControllerTest | ✅ Passing |
+
+Total implemented test scenarios:
+
+```
+5 test cases
+```
+
+---
+
+# Summary
+
+Authentication module now includes:
+
+* Service layer unit tests
+* Controller API tests
+* Request validation
+* Proper error handling
+* Stable API status verification
+
+This ensures the **authentication system behaves reliably and remains safe during future code changes.**
+
+---
+
+Append this **Auth Module Testing section** to your `README.md`.
+
+```markdown
+## 🧪 Testing — Auth Module
+
+JUnit testing has been implemented for the **Authentication module** to verify both business logic and API behavior.
+
+### Testing Stack
+
+- **JUnit 5** – Unit testing framework
+- **Mockito** – Mocking dependencies
+- **Spring Boot Test**
+- **MockMvc** – API controller testing
+
+---
+
+### Implemented Test Files
+
+Service layer testing:
+
+```
+
+AuthServiceTest
+
+```
+
+Controller layer testing:
+
+```
+
+AuthControllerTest
+
+```
+
+---
+
+### Service Layer Test Coverage
+
+The following scenarios are tested:
+
+- User registration success
+- Duplicate email registration failure
+- Successful user login
+- Login failure when user is not found
+
+Purpose:
+
+- Verify business logic correctness
+- Ensure service methods behave as expected
+- Mock repository and security dependencies
+
+---
+
+### Controller Layer Test Coverage
+
+API endpoints tested:
+
+```
+
+POST /api/v1/auth/register
+POST /api/v1/auth/login
+
+```
+
+Test scenarios:
+
+- Successful user registration
+- Successful user login
+- Invalid registration request (validation error)
+
+Expected HTTP responses verified:
+
+```
+
+200 OK
+400 BAD_REQUEST
+
+```
+
+---
+
+### Validation Improvements
+
+To support API validation testing, request validation was added.
+
+DTO validations implemented:
+
+- `@NotBlank` for required fields
+- `@Email` for email format validation
+
+Example fields validated:
+
+- name
+- email
+- password
+- role
+
+---
+
+### Global Exception Handling Update
+
+Validation exception handling was added to the `GlobalExceptionHandler`.
+
+Handled exception:
+
+```
+
+MethodArgumentNotValidException
+
+```
+
+This ensures invalid requests correctly return:
+
+```
+
+HTTP 400 BAD_REQUEST
+
+```
+
+instead of
+
+```
+
+HTTP 500 INTERNAL_SERVER_ERROR
+
+```
+
+---
+
+### Test Status
+
+| Layer | Test File | Status |
+|------|------|------|
+| Service | AuthServiceTest | ✅ Passing |
+| Controller | AuthControllerTest | ✅ Passing |
+
+Total implemented test cases:
+
+```
+
+5 test scenarios
+
+```
+
+---
+
+Future testing will be implemented for:
+
+- Campaign Module
+- Donation Module
+- Payment Module
+- User Module
+```
+
+
+
+---
+# Future Testing Expansion
+
+Upcoming modules that will receive testing:
+
+* Campaign Module
+* Donation Module
+* Payment Module
+* User Module
+* Admin Module

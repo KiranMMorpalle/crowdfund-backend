@@ -303,6 +303,20 @@ Swagger UI available at:
 
 ---
 
+## v4.0.0 — JUnit Testing (Auth Module)
+
+Implemented unit and controller testing for the authentication module.
+
+Features:
+- Added AuthServiceTest for service layer logic testing
+- Added AuthControllerTest for REST API testing using MockMvc
+- Implemented request validation for RegisterRequest
+- Added validation exception handling in GlobalExceptionHandler
+- Introduced TESTING.md documentation
+- Introduced ARCHITECTURE.md describing production and testing architecture
+
+---
+
 ## Next Planned Improvements
 
 - Docker containerization
