@@ -116,6 +116,86 @@ public class CampaignServiceImpl implements CampaignService {
     }
 
     @Override
+    @Transactional
+    public CampaignResponseDTO updateCampaign(UUID campaignId, CampaignRequest request, String userEmail) {
+
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        Campaign campaign = campaignRepository.findById(campaignId)
+                .orElseThrow(() -> new ResourceNotFoundException("Campaign not found"));
+
+        // Only creator can update
+        if (!campaign.getCreatedBy().getId().equals(user.getId())) {
+            throw new UnauthorizedOperationException("You can update only your own campaign.");
+        }
+
+        // Target validation
+        if (request.getTargetAmount() != null) {
+
+            if (request.getTargetAmount().compareTo(campaign.getRaisedAmount()) < 0) {
+                throw new BusinessValidationException(
+                        "Target amount cannot be less than already raised amount."
+                );
+            }
+
+            campaign.setTargetAmount(request.getTargetAmount());
+        }
+
+        // Allowed editable fields
+        if (request.getTitle() != null) {
+            campaign.setTitle(request.getTitle());
+        }
+
+        if (request.getDescription() != null) {
+            campaign.setDescription(request.getDescription());
+        }
+
+        if (request.getBeneficiaryName() != null) {
+            campaign.setBeneficiaryName(request.getBeneficiaryName());
+        }
+
+        if (request.getOrganizerName() != null) {
+            campaign.setOrganizerName(request.getOrganizerName());
+        }
+
+        if (request.getLocation() != null) {
+            campaign.setLocation(request.getLocation());
+        }
+
+        // If campaign already approved → reset moderation
+        if (campaign.getStatus().equals(CampaignStatus.APPROVED)) {
+            campaign.setStatus(CampaignStatus.PENDING);
+        }
+
+        Campaign updated = campaignRepository.save(campaign);
+
+        return mapToDTO(updated);
+    }
+
+    @Override
+    @Transactional
+    public void deleteCampaign(UUID campaignId, String adminEmail) {
+
+        User admin = userRepository.findByEmail(adminEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Admin not found"));
+
+        if (!admin.getRole().equals(Role.ADMIN)) {
+            throw new UnauthorizedOperationException("Only ADMIN can delete campaign.");
+        }
+
+        Campaign campaign = campaignRepository.findById(campaignId)
+                .orElseThrow(() -> new ResourceNotFoundException("Campaign not found"));
+
+        if (campaign.getRaisedAmount().compareTo(BigDecimal.ZERO) > 0) {
+            throw new BusinessValidationException("Campaign with donations cannot be deleted.");
+        }
+
+        campaignRepository.delete(campaign);
+    }
+
+
+    @Override
     public List<CampaignResponseDTO> getApprovedCampaigns() {
         return campaignRepository.findByStatus(CampaignStatus.APPROVED)
                 .stream()

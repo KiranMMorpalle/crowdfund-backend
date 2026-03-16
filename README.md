@@ -149,6 +149,7 @@ Convert service layer into production-grade REST APIs with:
 | POST   | `/api/v1/campaigns` |
 | GET    | `/api/v1/campaigns` |
 | GET    | `/api/v1/campaigns/{id}` |
+| PUT    | `/api/v1/campaigns/{id}` |
 
 ---
 
@@ -156,8 +157,9 @@ Convert service layer into production-grade REST APIs with:
 
 | Method | Endpoint |
 |--------|----------|
-| PUT | `/api/v1/admin/campaigns/{id}/approve` |
-| PUT | `/api/v1/admin/campaigns/{id}/reject` |
+| PUT    | `/api/v1/campaigns/{id}/approve` |
+| PUT    | `/api/v1/campaigns/{id}/reject` |
+| DELETE | `/api/v1/campaigns/{id}` |
 
 (Admin actions require `adminId` query parameter – temporary until JWT integration.)
 

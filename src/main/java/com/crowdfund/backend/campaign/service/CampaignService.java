@@ -14,6 +14,10 @@ public interface CampaignService {
 
     CampaignResponseDTO rejectCampaign(UUID campaignId, String adminEmail);
 
+    CampaignResponseDTO updateCampaign(UUID campaignId, CampaignRequest request, String userEmail);
+
+    void deleteCampaign(UUID campaignId, String adminEmail);
+
     List<CampaignResponseDTO> getApprovedCampaigns();
 
     CampaignResponseDTO getApprovedCampaignById(UUID campaignId);

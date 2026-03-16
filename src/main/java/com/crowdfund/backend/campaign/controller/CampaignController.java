@@ -74,4 +74,37 @@ public class CampaignController {
                 new ApiResponse<>(true, "Campaign approved successfully", approved)
         );
     }
+
+    @PreAuthorize("hasRole('USER')")
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<CampaignResponseDTO>> updateCampaign(
+            @PathVariable UUID id,
+            @RequestBody CampaignRequest request,
+            Authentication authentication) {
+
+        String email = authentication.getName();
+
+        CampaignResponseDTO updated =
+                campaignService.updateCampaign(id, request, email);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Campaign updated successfully", updated)
+        );
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteCampaign(
+            @PathVariable UUID id,
+            Authentication authentication) {
+
+        String adminEmail = authentication.getName();
+
+        campaignService.deleteCampaign(id, adminEmail);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Campaign deleted successfully", null)
+        );
+    }
+
 }

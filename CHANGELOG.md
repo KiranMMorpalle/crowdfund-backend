@@ -52,6 +52,7 @@ All notable changes to this project will be documented here.
 - DTO boundary (CampaignResponseDTO, UserSummaryDTO)
 - API versioning (`/api/v1`)
 
+
 ### Improved
 - Removed entity exposure from controllers
 - Proper HTTP status alignment (201, 400, 403, 404)
@@ -59,13 +60,17 @@ All notable changes to this project will be documented here.
 - Clean separation of public and admin endpoints
 - Structured JSON error responses
 - Repository method `findByIdAndStatus` for secure public access
+- Campaign update API
+- Campaign delete API
+
 
 ### Verified
 - Full Postman API testing completed
 - RBAC enforcement validated
 - Business validation scenarios tested
 - Duplicate approval protection verified
-
+- PUT /api/v1/campaigns/{id}
+- DELETE /api/v1/campaigns/{id}
 ---
 
 ## [v1.3.0] - Day 4 (Donation Module & Concurrency)
