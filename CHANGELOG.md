@@ -376,6 +376,73 @@ Features:
 - Exception scenarios validated
 - All donation controller tests passing
 
+---
+
+---
+
+## [v4.3.0] — Payment Module Testing
+
+### Added
+- PaymentServiceTest for service layer unit testing
+- PaymentControllerTest using MockMvc for REST API testing
+- RazorpayWebhookControllerTest for webhook endpoint validation
+- Mockito-based mocking for PaymentService and PaymentWebhookService
+
+### Service Layer Test Coverage
+- Payment verification success flow
+- Donation status update after successful payment
+- Payment status update to SUCCESS
+- Handling of missing donation (throws exception)
+- Handling of missing payment (throws exception)
+
+### Controller Layer Test Coverage
+
+#### Payment APIs
+- POST /api/v1/payments/order/{donationId}
+- POST /api/v1/payments/verify
+
+#### Webhook API
+- POST /api/v1/payments/webhook
+
+### Test Scenarios
+- Successful order creation → HTTP 200 OK
+- Successful payment verification → HTTP 200 OK
+- Successful webhook processing → HTTP 200 OK
+
+### Testing Challenges & Fixes
+
+#### Entity Handling Fix
+- Donation entity does not expose setters or builder
+- Used `ReflectionTestUtils` to set private fields in tests
+- Ensured no modification to production entity
+
+#### Security Issues Fix
+- ApplicationContext failed due to JwtAuthenticationFilter dependency
+- Resolved by:
+  - Disabling security filters:
+    ```
+    @AutoConfigureMockMvc(addFilters = false)
+    ```
+  - Excluding JwtAuthenticationFilter using component scan filters
+
+#### Test Isolation Improvement
+- Prevented loading full security configuration in controller tests
+- Focused tests only on API behavior and response validation
+
+### Improved
+- Achieved proper separation between service and controller testing
+- Ensured test stability without impacting production security configuration
+- Aligned tests with real payment workflow (verification + webhook)
+
+### Verified
+- Payment verification logic validated
+- Donation status correctly updated after payment
+- Controller endpoints tested using MockMvc
+- Webhook endpoint successfully simulated
+- All payment-related tests passing
+
+---
+
 
 
 ---
