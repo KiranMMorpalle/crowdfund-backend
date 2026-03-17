@@ -461,10 +461,7 @@ Future testing will be implemented for:
 
 ---
 
-# ✅ For `TESTING.md` (append below Auth section)
-
-```markdown
-# Campaign Module Testing
+## ✅ Campaign Module Testing
 
 ## Overview
 
@@ -587,7 +584,133 @@ Campaign module now includes:
 - Stable API validation
 
 Ensures reliable campaign lifecycle handling and admin moderation.
+
+---
+
+## ✅Donation Module Testing
+
+## Overview
+
+Testing implemented for the **Donation module** to verify:
+
+- Donation creation flow
+- Donation confirmation flow
+- Validation handling
+- Exception handling
+
+---
+
+## Test Files
+
+Controller Layer:
+
 ```
+
+DonationControllerTest
+
+```
+
+---
+
+## Controller Layer Coverage
+
+### Donation API
+
+```
+
+POST /api/v1/campaigns/{id}/donate
+
+```
+
+### Confirmation API
+
+```
+
+POST /api/v1/campaigns/donations/{id}/confirm
+
+```
+
+---
+
+## Test Scenarios
+
+- Successful donation → `200 OK`
+- Successful donation confirmation → `200 OK`
+- Invalid request (missing amount) → `400 BAD_REQUEST`
+- Service exception → `500 INTERNAL_SERVER_ERROR`
+
+---
+
+## Security Handling in Tests
+
+To isolate controller behavior:
+
+- Disabled security filters:
+
+```
+
+@AutoConfigureMockMvc(addFilters = false)
+
+```
+
+- Mocked required security dependencies:
+
+```
+
+@MockBean JwtAuthenticationFilter
+@MockBean JwtService
+
+```
+
+This prevents ApplicationContext loading failures during testing.
+
+---
+
+## Validation Handling
+
+- DTO validation applied for donation request
+- Invalid input correctly returns:
+
+```
+
+HTTP 400 BAD_REQUEST
+
+```
+
+---
+
+## Exception Handling
+
+- Service-level exceptions mapped to:
+
+```
+
+HTTP 500 INTERNAL_SERVER_ERROR
+
+(Handled via GlobalExceptionHandler)
+
+---
+
+## Test Status
+
+| Layer      | Test File               | Status    |
+| ---------- | ---------------------- | --------- |
+| Controller | DonationControllerTest | ✅ Passing |
+
+---
+
+## Summary
+
+Donation module testing now includes:
+
+- Controller-level API testing
+- Validation testing
+- Exception handling verification
+- Security-isolated test execution
+
+Ensures reliable donation flow and stable API behavior.
+
+
 
 ---
 # Future Testing Expansion

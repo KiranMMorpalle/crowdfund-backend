@@ -344,6 +344,41 @@ Features:
 
 
 ---
+
+## [v4.2.0] — Donation Module Testing
+
+### Added
+- DonationControllerTest using MockMvc
+- DonationService mocking using Mockito
+- Security stubs added for testing:
+  - JwtAuthenticationFilter (mocked)
+  - JwtService (mocked)
+
+### Controller Test Coverage
+- POST /api/v1/campaigns/{id}/donate
+- POST /api/v1/campaigns/donations/{id}/confirm
+
+### Test Scenarios
+- Successful donation → HTTP 200 OK
+- Successful donation confirmation → HTTP 200 OK
+- Invalid request (missing/invalid amount) → HTTP 400 BAD_REQUEST
+- Service exception handling → HTTP 500 INTERNAL_SERVER_ERROR
+
+### Improved
+- Disabled security filters in controller tests using:
+  - @AutoConfigureMockMvc(addFilters = false)
+- Prevented ApplicationContext failure by mocking security dependencies
+- Aligned test cases with actual controller endpoints
+
+### Verified
+- Donation API endpoints tested via MockMvc
+- Validation behavior confirmed
+- Exception scenarios validated
+- All donation controller tests passing
+
+
+
+---
 ## Next Planned Improvements
 
 - Docker containerization
