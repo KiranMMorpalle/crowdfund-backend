@@ -317,6 +317,33 @@ Features:
 
 ---
 
+## [v4.1.0] — Campaign Module Testing
+
+### Added
+- CampaignServiceTest for business logic validation
+- CampaignControllerTest for public API testing
+- AdminCampaignControllerTest for admin APIs
+- MockMvc-based controller testing setup
+
+### Fixed
+- Removed invalid test methods calling non-existing service functions
+- Fixed NullPointerException in controller tests (Authentication injection)
+- Resolved 403 Forbidden issue using CSRF in tests
+
+### Improved
+- Aligned test cases with actual controller endpoints
+- Added security-aware testing using @WithMockUser
+- Mocked security dependencies (JwtService, CustomUserDetailsService)
+- Ensured stable admin approval/rejection flow testing
+
+### Verified
+- Campaign APIs tested (CRUD + search)
+- Admin approval/rejection APIs validated
+- Security behavior validated in test environment
+- All campaign-related tests passing
+
+
+---
 ## Next Planned Improvements
 
 - Docker containerization

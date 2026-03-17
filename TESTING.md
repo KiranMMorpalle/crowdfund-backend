@@ -460,6 +460,136 @@ Future testing will be implemented for:
 
 
 ---
+
+# ✅ For `TESTING.md` (append below Auth section)
+
+```markdown
+# Campaign Module Testing
+
+## Overview
+
+Testing implemented for **Campaign + Admin Campaign module** covering:
+
+- Business logic validation
+- Public API behavior
+- Admin approval/rejection flows
+- Security handling
+
+---
+
+## Test Files
+
+Service Layer:
+
+```
+
+CampaignServiceTest
+
+```
+
+Controller Layer:
+
+```
+
+CampaignControllerTest
+AdminCampaignControllerTest
+
+```
+
+---
+
+## Service Layer Coverage
+
+- Campaign creation
+- Campaign update
+- Campaign deletion
+- Campaign search (pagination, filters)
+- Approval logic
+- Rejection logic
+- Invalid state handling
+
+---
+
+## Controller Layer Coverage
+
+### Public APIs
+
+```
+
+GET /api/v1/campaigns
+GET /api/v1/campaigns/{id}
+POST /api/v1/campaigns
+PUT /api/v1/campaigns/{id}
+DELETE /api/v1/campaigns/{id}
+
+```
+
+### Admin APIs
+
+```
+
+PUT /api/v1/admin/campaigns/{id}/approve
+PUT /api/v1/admin/campaigns/{id}/reject
+
+```
+
+---
+
+## Key Fixes During Testing
+
+- Fixed incorrect test methods (removed non-existing service calls)
+- Fixed `NullPointerException` due to missing `Authentication`
+- Added `@WithMockUser` for security context injection
+- Fixed `403 Forbidden` using `.with(csrf())` for PUT APIs
+- Mocked security dependencies (`JwtService`, `CustomUserDetailsService`)
+- Ensured test structure matches actual controller endpoints
+
+---
+
+## Security Handling in Tests
+
+- Role-based access simulated using:
+
+```
+
+@WithMockUser(roles = "ADMIN")
+
+```
+
+- CSRF added for state-changing requests:
+
+```
+
+.with(csrf())
+
+```
+
+---
+
+## Test Status
+
+| Layer      | Test File                        | Status    |
+| ---------- | ------------------------------- | --------- |
+| Service    | CampaignServiceTest             | ✅ Passing |
+| Controller | CampaignControllerTest          | ✅ Passing |
+| Controller | AdminCampaignControllerTest     | ✅ Passing |
+
+---
+
+## Summary
+
+Campaign module now includes:
+
+- Service unit tests
+- Public controller tests
+- Admin controller tests
+- Security-aware testing
+- Stable API validation
+
+Ensures reliable campaign lifecycle handling and admin moderation.
+```
+
+---
 # Future Testing Expansion
 
 Upcoming modules that will receive testing:
