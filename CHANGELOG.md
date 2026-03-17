@@ -443,6 +443,49 @@ Features:
 
 ---
 
+## [v4.4.0] — User Module Testing
+
+### Added
+- UserServiceTest for service layer unit testing using Mockito
+- UserControllerTest using MockMvc for REST API testing
+- Validation annotations for CreateUserRequest:
+  - @NotBlank (name, password)
+  - @Email + @NotBlank (email)
+- Request validation enabled using @Valid in UserController
+
+### Service Layer Test Coverage
+- Successful user creation
+- Duplicate email validation (throws BusinessValidationException)
+- Password hashing verification
+- Repository interaction validation
+
+### Controller Layer Test Coverage
+- POST /api/v1/users
+
+### Test Scenarios
+- Successful user creation → HTTP 200 OK
+- Invalid input (empty name, invalid email, empty password) → HTTP 400 BAD_REQUEST
+
+### Security Handling in Tests
+- Disabled security filters using:
+```
+
+@AutoConfigureMockMvc(addFilters = false)
+
+```
+- Mocked JwtAuthenticationFilter to prevent ApplicationContext failure
+
+### Improved
+- Proper request validation enforced at controller level
+- Correct HTTP status handling for invalid inputs (400 instead of 200)
+- Clean separation of DTO validation and service logic
+
+### Verified
+- Service layer logic validated via unit tests
+- Controller endpoints tested using MockMvc
+- Validation behavior confirmed
+- All user module tests passing
+```
 
 
 ---

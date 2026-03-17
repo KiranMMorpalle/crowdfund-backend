@@ -953,8 +953,151 @@ Payment module now includes:
 
 This ensures the **payment system is reliable, testable, and production-ready**, especially for critical financial workflows.
 
+---
+
+## ✅ User Module Testing
+
+## Overview
+
+Testing implemented for the **User module** to verify:
+
+- User creation logic
+- Duplicate email validation
+- Request validation handling
+- API response correctness
+
+---
+
+## Test Files
+
+Service Layer:
+
 ```
 
+UserServiceTest
+
+```
+
+Controller Layer:
+
+```
+
+UserControllerTest
+
+```
+
+---
+
+## Service Layer Coverage
+
+- User creation with valid data
+- Duplicate email check (throws BusinessValidationException)
+- Password hashing verification
+- Repository save operation validation
+
+---
+
+## Controller Layer Coverage
+
+### API Endpoint
+
+```
+
+POST /api/v1/users
+
+```
+
+---
+
+## Test Scenarios
+
+- Successful user creation → `200 OK`
+- Invalid input (empty name, invalid email, empty password) → `400 BAD_REQUEST`
+
+---
+
+## Validation Handling
+
+Validation added to request DTO:
+
+- `@NotBlank` → name, password
+- `@Email` + `@NotBlank` → email
+
+Validation triggered using:
+
+```
+
+@Valid @RequestBody
+
+```
+
+Invalid requests correctly return:
+
+```
+
+HTTP 400 BAD_REQUEST
+
+```
+
+---
+
+## Security Handling in Tests
+
+To isolate controller testing:
+
+- Disabled security filters:
+
+```
+
+@AutoConfigureMockMvc(addFilters = false)
+
+```
+
+- Mocked security dependency:
+
+```
+
+@MockBean JwtAuthenticationFilter
+
+```
+
+---
+
+## Dependencies Used
+
+```
+
+spring-boot-starter-test
+mockito-core
+mockito-junit-jupiter
+spring-test
+spring-boot-starter-validation
+
+```
+
+---
+
+## Test Status
+
+| Layer      | Test File             | Status    |
+| ---------- | -------------------- | --------- |
+| Service    | UserServiceTest      | ✅ Passing |
+| Controller | UserControllerTest   | ✅ Passing |
+
+---
+
+## Summary
+
+User module now includes:
+
+- Service layer unit testing
+- Controller API testing
+- Input validation testing
+- Proper HTTP response validation
+- Security-isolated test execution
+
+Ensures reliable user creation flow and stable API behavior.
+```
 
 
 ---
