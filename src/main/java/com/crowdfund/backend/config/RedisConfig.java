@@ -1,4 +1,4 @@
-package com.crowdfund.backend.backend.config;
+package com.crowdfund.backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

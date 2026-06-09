@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
         user.setPasswordHash(hashedPassword);
 
         if (role != null) {
-            user.setRole(Role.valueOf(role));
+            user.setRole(Role.USER);     // user.setRole(Role.valueOf(role));
         }
 
         return userRepository.save(user);

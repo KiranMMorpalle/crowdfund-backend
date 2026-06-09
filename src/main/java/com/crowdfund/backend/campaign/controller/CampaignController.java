@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/api/v1/campaigns")
@@ -26,6 +27,7 @@ public class CampaignController {
     // =========================
     // CREATE
     // =========================
+    @PreAuthorize("hasRole('USER')")
     @PostMapping
     public ResponseEntity<?> createCampaign(
             @RequestBody CampaignRequest request,
@@ -40,8 +42,47 @@ public class CampaignController {
     }
 
     // =========================
+    // APPROVE
+    // =========================
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}/approve")
+    public ResponseEntity<ApiResponse<CampaignResponseDTO>> approveCampaign(
+            @PathVariable UUID id,
+            Authentication authentication) {
+
+        String adminEmail = authentication.getName();
+
+        CampaignResponseDTO updated =
+                campaignService.approveCampaign(id, adminEmail);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Campaign approved successfully", updated)
+        );
+    }
+
+    // =========================
+    // Reject
+    // =========================
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}/reject")
+    public ResponseEntity<ApiResponse<CampaignResponseDTO>> rejectCampaign(
+            @PathVariable UUID id,
+            Authentication authentication) {
+
+        String adminEmail = authentication.getName();
+
+        CampaignResponseDTO updated =
+                campaignService.rejectCampaign(id, adminEmail);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Campaign rejected successfully", updated)
+        );
+    }
+
+    // =========================
     // UPDATE
     // =========================
+    @PreAuthorize("hasRole('USER')")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateCampaign(
             @PathVariable UUID id,
@@ -58,6 +99,7 @@ public class CampaignController {
     // =========================
     // DELETE
     // =========================
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCampaign(
             @PathVariable UUID id,
@@ -70,20 +112,7 @@ public class CampaignController {
         return ResponseEntity.ok(new ApiResponse<>(true, "Deleted successfully"));
     }
 
-    // =========================
-    // APPROVE
-    // =========================
-    @PatchMapping("/{id}/approve")
-    public ResponseEntity<?> approveCampaign(
-            @PathVariable UUID id,
-            Authentication authentication
-    ) {
-        String email = (authentication != null) ? authentication.getName() : "test-user";
 
-        CampaignResponseDTO response = campaignService.approveCampaign(id, email);
-
-        return ResponseEntity.ok(new ApiResponse<>(true, response));
-    }
 
     // =========================
     // GET BY ID

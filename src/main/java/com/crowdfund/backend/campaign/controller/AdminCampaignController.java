@@ -20,35 +20,10 @@ public class AdminCampaignController {
         this.campaignService = campaignService;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/{id}/approve")
-    public ResponseEntity<ApiResponse<CampaignResponseDTO>> approve(
-            @PathVariable UUID id,
-            Authentication authentication) {
 
-        String adminEmail = authentication.getName();
 
-        CampaignResponseDTO updated =
-                campaignService.approveCampaign(id, adminEmail);
+    // write separate admin controller (API) in diff file -> better design
+    // useful => when system have more admin APIs
 
-        return ResponseEntity.ok(
-                new ApiResponse<>(true, "Campaign approved successfully", updated)
-        );
-    }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/{id}/reject")
-    public ResponseEntity<ApiResponse<CampaignResponseDTO>> reject(
-            @PathVariable UUID id,
-            Authentication authentication) {
-
-        String adminEmail = authentication.getName();
-
-        CampaignResponseDTO updated =
-                campaignService.rejectCampaign(id, adminEmail);
-
-        return ResponseEntity.ok(
-                new ApiResponse<>(true, "Campaign rejected successfully", updated)
-        );
-    }
 }
